@@ -6,9 +6,20 @@ var io = require('socket.io')(http); //format that it expects.
 
 app.use(express.static(__dirname + '/public'));
 
-io.on('connection', function(){
+io.on('connection', function(socket){ //socket:: individual connection
 
-	console.log('user connected via socket.io');	
+	console.log('user connected via socket.io');
+
+	socket.on('message', function(message){
+
+		console.log('Message received: ' + message.text);
+		socket.broadcast.emit('message', message); //everybody else...
+
+	}); //listens to events
+
+	socket.emit('message', {
+		text : 'Welcome to the chat app'
+	});	
 
 }) //connection event (function run when it happens)
 
